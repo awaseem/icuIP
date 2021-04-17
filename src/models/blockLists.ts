@@ -1,4 +1,6 @@
 import { Fetch } from './fetch'
+import isCidr from 'is-cidr'
+import isIp from 'is-ip'
 
 interface BlockListIP {
   readonly getBlockListIps: (
@@ -9,6 +11,10 @@ interface BlockListIP {
 export function createBlockListIP(fetcher: Fetch): BlockListIP {
   function isNotComment(line: string): boolean {
     return !line.startsWith('#')
+  }
+
+  function isValidIp(line: string): boolean {
+    return Boolean(isCidr(line)) || isIp(line)
   }
 
   async function getBlockListIps(
@@ -22,8 +28,7 @@ export function createBlockListIP(fetcher: Fetch): BlockListIP {
 
     const fileLines = fileData.split('\n')
 
-    // TODO add more validation for ip address w/ cidr matching
-    const validIPs = fileLines.filter(isNotComment)
+    const validIPs = fileLines.filter(isNotComment).filter(isValidIp)
     return validIPs
   }
 
