@@ -2,7 +2,7 @@ import { Fetch } from './fetch'
 import isCidr from 'is-cidr'
 import isIp from 'is-ip'
 
-interface BlockListIP {
+export interface BlockListIP {
   readonly getBlockListIps: (
     url: string,
   ) => Promise<readonly string[] | undefined>

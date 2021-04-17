@@ -1,15 +1,22 @@
 import { createBlockListIP } from './models/blockLists'
 import { createFetch } from './models/fetch'
+import { createTrie } from './models/trie'
+import { createTrieUpdater } from './process/trieUpdater'
 
 async function main(): Promise<void> {
-  const fetch = createFetch()
-  const blockLists = createBlockListIP(fetch)
+  // initialize models
+  const fetcher = createFetch()
+  const trie = createTrie()
+  const blockListIP = createBlockListIP(fetcher)
 
-  console.log(
-    await blockLists.getBlockListIps(
-      'https://raw.githubusercontent.com/firehol/blocklist-ipsets/master/firehol_level1.netset',
-    ),
-  )
+  // initialize processes
+  const trieUpdater = createTrieUpdater(blockListIP, trie)
+
+  // Update Trie
+  await trieUpdater.update()
+
+  // DEBUG: view data inserted to Trie
+  trie.display()
 }
 
 main()
