@@ -13,6 +13,10 @@ export function createBlockListIP(fetcher: Fetch): BlockListIP {
     return !line.startsWith('#')
   }
 
+  function trimWhiteSpace(line: string): string {
+    return line.trim()
+  }
+
   function isValidIp(line: string): boolean {
     return Boolean(isCidr(line)) || isIp(line)
   }
@@ -28,7 +32,10 @@ export function createBlockListIP(fetcher: Fetch): BlockListIP {
 
     const fileLines = fileData.split('\n')
 
-    const validIPs = fileLines.filter(isNotComment).filter(isValidIp)
+    const validIPs = fileLines
+      .map(trimWhiteSpace)
+      .filter(isNotComment)
+      .filter(isValidIp)
     return validIPs
   }
 
