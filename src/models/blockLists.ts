@@ -5,7 +5,6 @@ import isIp from 'is-ip'
 export interface BlockListIP {
   readonly getBlockListIps: (
     url: string,
-    personalAuthToken?: string,
   ) => Promise<readonly string[] | undefined>
 }
 
