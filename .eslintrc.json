@@ -61,11 +61,6 @@
       }
     ],
     "@typescript-eslint/no-for-in-array": ["error"],
-    "no-magic-numbers": "off",
-    "@typescript-eslint/no-magic-numbers": [
-      "error",
-      { "ignoreNumericLiteralTypes": true }
-    ],
     "@typescript-eslint/no-require-imports": ["error"],
     "require-await": "off",
     "@typescript-eslint/require-await": "error",
