@@ -5,7 +5,7 @@ import { createTrie } from './models/trie'
 import { createTrieUpdater } from './process/trieUpdater'
 import { createServer, registerPlugins } from './server/server'
 import { addStatusRoute } from './routes/status'
-import { addIpCheckRoute } from './routes/checkIP'
+import { addIpCheckRoute } from './routes/checkIp'
 
 const DEFAULT_PORT = 8080
 const DEFAULT_ADDRESS = '0.0.0.0'
