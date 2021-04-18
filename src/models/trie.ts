@@ -6,6 +6,7 @@ export interface Trie {
   readonly remove: (ip: string) => void
   readonly clear: () => void
   readonly toDict: () => Record<string, string>
+  readonly size: () => number
   readonly display: () => void
 }
 
@@ -32,6 +33,10 @@ export function createTrie(): Trie {
     return router.toDict()
   }
 
+  function size(): number {
+    return router.size()
+  }
+
   // DEBUG: just added to display the active Trie
   function display(): void {
     console.log(JSON.stringify(router.toDict(), null, 2))
@@ -44,5 +49,6 @@ export function createTrie(): Trie {
     display,
     toDict,
     remove,
+    size,
   })
 }

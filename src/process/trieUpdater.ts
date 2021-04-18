@@ -57,6 +57,8 @@ export function createTrieUpdater(
       updateTrieForFile(data.name, data.url),
     )
     await Promise.all(updatePromises)
+
+    console.log(`Updated Trie size is the following: ${trie.size()}`)
   }
 
   function pollingUpdate(config: readonly UpdateConfig[]): void {

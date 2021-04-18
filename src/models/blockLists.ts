@@ -1,6 +1,6 @@
 import { Fetch } from './fetch'
 import isCidr from 'is-cidr'
-import isIp from 'is-ip'
+import { v4 } from 'is-ip'
 
 export interface BlockListIP {
   readonly getBlockListIps: (
@@ -17,8 +17,17 @@ export function createBlockListIP(fetcher: Fetch): BlockListIP {
     return line.trim()
   }
 
-  function isValidIp(line: string): boolean {
-    return Boolean(isCidr(line)) || isIp(line)
+  function isValidIpV4(line: string): boolean {
+    return Boolean(isCidr(line)) || v4(line)
+  }
+
+  function addMaskIfNeeded(ip: string): string {
+    const [ipAddr, mask] = ip.split('/')
+    if (!mask) {
+      return `${ipAddr}/32`
+    }
+
+    return ip
   }
 
   async function getBlockListIps(
@@ -35,7 +44,8 @@ export function createBlockListIP(fetcher: Fetch): BlockListIP {
     const validIPs = fileLines
       .map(trimWhiteSpace)
       .filter(isNotComment)
-      .filter(isValidIp)
+      .filter(isValidIpV4)
+      .map(addMaskIfNeeded)
     return validIPs
   }
 
