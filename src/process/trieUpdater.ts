@@ -1,10 +1,14 @@
 import { Trie } from '../models/trie'
-import config from '../config/fireholLists.json'
 import { BlockListIP } from '../models/blockLists'
 import { difference } from '../utils/array'
 
 export interface TrieUpdater {
-  readonly update: () => Promise<void>
+  readonly update: (config: readonly UpdateConfig[]) => Promise<void>
+}
+
+export interface UpdateConfig {
+  readonly name: string
+  readonly url: string
 }
 
 export function createTrieUpdater(
@@ -35,7 +39,7 @@ export function createTrieUpdater(
     ipsToRemove.forEach((ip) => trie.remove(ip))
   }
 
-  async function update(): Promise<void> {
+  async function update(config: readonly UpdateConfig[]): Promise<void> {
     const updatePromises = config.map((data) =>
       updateTrieForFile(data.name, data.url),
     )
