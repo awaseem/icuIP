@@ -5,6 +5,7 @@ import isIp from 'is-ip'
 export interface BlockListIP {
   readonly getBlockListIps: (
     url: string,
+    personalAuthToken?: string,
   ) => Promise<readonly string[] | undefined>
 }
 
@@ -23,8 +24,15 @@ export function createBlockListIP(fetcher: Fetch): BlockListIP {
 
   async function getBlockListIps(
     url: string,
+    personalAuthToken?: string,
   ): Promise<readonly string[] | undefined> {
-    const fileData = await fetcher.fetchFile(url)
+    const headers = personalAuthToken
+      ? {
+          Authorization: `token ${personalAuthToken}`,
+        }
+      : undefined
+
+    const fileData = await fetcher.fetchFile(url, headers)
     if (!fileData) {
       console.log(`Failed to find file data for url: ${url}`)
       return undefined
