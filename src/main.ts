@@ -16,8 +16,8 @@ async function main(): Promise<void> {
   // Update Trie
   await trieUpdater.update(config)
 
-  // DEBUG: view data inserted to Trie
-  trie.display()
+  // Starting polling for changes
+  trieUpdater.pollingUpdate(config)
 }
 
 main()

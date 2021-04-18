@@ -1,13 +1,21 @@
 import fetch from 'node-fetch'
 
 export interface Fetch {
-  readonly fetchFile: (fileURL: string) => Promise<string | undefined>
+  readonly fetchFile: (
+    fileURL: string,
+    headers?: Record<string, string>,
+  ) => Promise<string | undefined>
 }
 
 export function createFetch(): Fetch {
-  async function fetchFile(fileURL: string): Promise<string | undefined> {
+  async function fetchFile(
+    fileURL: string,
+    headers?: Record<string, string>,
+  ): Promise<string | undefined> {
     try {
-      const response = await fetch(fileURL)
+      const response = await fetch(fileURL, {
+        headers,
+      })
       return response.text()
     } catch (error) {
       console.error(
