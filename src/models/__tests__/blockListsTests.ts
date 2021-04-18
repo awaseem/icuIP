@@ -96,17 +96,4 @@ amIAnIP?`
     const actualIps = await blockList.getBlockListIps('test')
     expect(actualIps).toEqual(undefined)
   })
-
-  it('auth token is accounted for when request data to fetcher', async () => {
-    const fileResponse = undefined
-
-    mockFetcher.fetchFile.mockReturnValueOnce(fileResponse)
-
-    const actualIps = await blockList.getBlockListIps('test', 'testToken')
-
-    expect(mockFetcher.fetchFile).toBeCalledWith('test', {
-      Authorization: 'token testToken',
-    })
-    expect(actualIps).toEqual(undefined)
-  })
 })
