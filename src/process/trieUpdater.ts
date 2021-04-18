@@ -2,8 +2,11 @@ import { Trie } from '../models/trie'
 import { BlockListIP } from '../models/blockLists'
 import { difference } from '../utils/array'
 
+const FIVE_MINUTES = 300000
+
 export interface TrieUpdater {
   readonly update: (config: readonly UpdateConfig[]) => Promise<void>
+  readonly pollingUpdate: (config: readonly UpdateConfig[]) => void
 }
 
 export interface UpdateConfig {
@@ -15,6 +18,16 @@ export function createTrieUpdater(
   blockLists: BlockListIP,
   trie: Trie,
 ): TrieUpdater {
+  function addIP(ip: string, fileName: string): void {
+    trie.insert(ip, fileName)
+    console.log(`Added new IP: ${ip}`)
+  }
+
+  function removeIP(ip: string): void {
+    trie.remove(ip)
+    console.log(`Removed IP: ${ip}`)
+  }
+
   async function updateTrieForFile(
     fileName: string,
     fileUrl: string,
@@ -35,8 +48,8 @@ export function createTrieUpdater(
     const ipsToAdd = difference(ips, existingIps)
     const ipsToRemove = difference(existingIps, ips)
 
-    ipsToAdd.forEach((ip) => trie.insert(ip, fileName))
-    ipsToRemove.forEach((ip) => trie.remove(ip))
+    ipsToAdd.forEach((ip) => addIP(ip, fileName))
+    ipsToRemove.forEach((ip) => removeIP(ip))
   }
 
   async function update(config: readonly UpdateConfig[]): Promise<void> {
@@ -46,7 +59,12 @@ export function createTrieUpdater(
     await Promise.all(updatePromises)
   }
 
+  function pollingUpdate(config: readonly UpdateConfig[]): void {
+    setInterval(() => update(config), FIVE_MINUTES)
+  }
+
   return Object.freeze({
     update,
+    pollingUpdate,
   })
 }

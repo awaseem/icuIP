@@ -24,15 +24,8 @@ export function createBlockListIP(fetcher: Fetch): BlockListIP {
 
   async function getBlockListIps(
     url: string,
-    personalAuthToken?: string,
   ): Promise<readonly string[] | undefined> {
-    const headers = personalAuthToken
-      ? {
-          Authorization: `token ${personalAuthToken}`,
-        }
-      : undefined
-
-    const fileData = await fetcher.fetchFile(url, headers)
+    const fileData = await fetcher.fetchFile(url)
     if (!fileData) {
       console.log(`Failed to find file data for url: ${url}`)
       return undefined
