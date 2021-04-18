@@ -1,6 +1,6 @@
 import { createTrie } from '../../models/trie'
 import { createServer } from '../../server/server'
-import { addIpCheckRoute } from '../checkIP'
+import { addIpCheckRoute } from '../checkIp'
 
 describe('Check IP address endpoint', () => {
   const trie = createTrie()

@@ -18,10 +18,9 @@
     "lint": "eslint . --ext .ts,.tsx",
     "prettier": "prettier --write src/",
     "prettier:check": "prettier --check src/",
-    "test": "jest",
+    "test": "jest --silent",
     "test:watch": "jest --watch --coverage",
-    "postinstall": "tsc -p tsconfig.release.json",
-    "compile-schemas": "compile-schemas-to-typescript src/routes/schemas src/routes/types"
+    "postinstall": "tsc -p tsconfig.release.json"
   },
   "dependencies": {
     "@types/express": "^4.17.11",
@@ -42,7 +41,6 @@
     "@types/node-fetch": "^2.5.10",
     "@typescript-eslint/eslint-plugin": "~4.21.0",
     "@typescript-eslint/parser": "~4.21.0",
-    "compile-schemas-to-typescript": "^0.2.0",
     "eslint": "~7.23.0",
     "eslint-config-prettier": "~8.1.0",
     "eslint-plugin-functional": "^3.2.1",
