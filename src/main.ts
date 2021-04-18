@@ -27,7 +27,7 @@ async function main(): Promise<void> {
 
   // Add routes
   addStatusRoute(server)
-  addIpCheckRoute(server)
+  addIpCheckRoute(server, trie)
 
   // Update Trie
   await trieUpdater.update(config)

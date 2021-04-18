@@ -1,4 +1,8 @@
-import fastify, { FastifyInstance, FastifyLoggerInstance } from 'fastify'
+import fastify, {
+  FastifyInstance,
+  FastifyLoggerInstance,
+  FastifyRequest,
+} from 'fastify'
 import middie from 'middie'
 import fastifySwagger from 'fastify-swagger'
 import { Server, IncomingMessage, ServerResponse } from 'http'
@@ -9,6 +13,8 @@ export type FastifyServer = FastifyInstance<
   ServerResponse,
   FastifyLoggerInstance
 >
+
+export type RequestGeneric<T> = FastifyRequest<T, Server, IncomingMessage>
 
 export function createServer(): FastifyServer {
   return fastify()
