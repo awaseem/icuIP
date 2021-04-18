@@ -1,6 +1,7 @@
 import { Trie } from '../models/trie'
 import config from '../config/fireholLists.json'
 import { BlockListIP } from '../models/blockLists'
+import { difference } from '../utils/array'
 
 export interface TrieUpdater {
   readonly update: () => Promise<void>
@@ -22,7 +23,16 @@ export function createTrieUpdater(
       return
     }
 
-    ips.forEach((ip) => trie.insert(ip, fileName))
+    const existingTrieDict = trie.toDict()
+    const existingIps = Object.keys(existingTrieDict).filter(
+      (key) => existingTrieDict[key] === fileName,
+    )
+
+    const ipsToAdd = difference(ips, existingIps)
+    const ipsToRemove = difference(existingIps, ips)
+
+    ipsToAdd.forEach((ip) => trie.insert(ip, fileName))
+    ipsToRemove.forEach((ip) => trie.remove(ip))
   }
 
   async function update(): Promise<void> {
