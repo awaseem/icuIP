@@ -18,7 +18,7 @@
     "lint": "eslint . --ext .ts,.tsx",
     "prettier": "prettier --write src/",
     "prettier:check": "prettier --check src/",
-    "test": "jest",
+    "test": "jest --silent",
     "test:watch": "jest --watch --coverage",
     "postinstall": "tsc -p tsconfig.release.json"
   },
