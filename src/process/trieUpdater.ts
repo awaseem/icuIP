@@ -28,35 +28,53 @@ export function createTrieUpdater(
     console.log(`Removed IP: ${ip}`)
   }
 
-  async function updateTrieForFile(
-    fileName: string,
-    fileUrl: string,
-  ): Promise<void> {
-    const ips = await blockLists.getBlockListIps(fileUrl)
-    if (!ips) {
-      console.log(
-        `Failed to load ips into trie for the following file ${fileName} and url: ${fileUrl}`,
-      )
-      return
-    }
-
-    const existingTrieDict = trie.toDict()
-    const existingIps = Object.keys(existingTrieDict).filter(
-      (key) => existingTrieDict[key] === fileName,
+  async function getBlockListsForConfig(
+    config: readonly UpdateConfig[],
+  ): Promise<ReadonlyArray<readonly string[]> | undefined> {
+    const ipPromises = config.map((config) =>
+      blockLists.getBlockListIps(config.url),
     )
 
-    const ipsToAdd = difference(ips, existingIps)
-    const ipsToRemove = difference(existingIps, ips)
+    const ips = await Promise.all(ipPromises)
+    const undefinedIndex = ips.findIndex((ip) => ip === undefined)
+    if (undefinedIndex !== -1) {
+      console.log(
+        `File fetching failed for ${config[undefinedIndex].name} @ ${config[undefinedIndex].url}`,
+      )
+      return undefined
+    }
 
-    ipsToAdd.forEach((ip) => addIP(ip, fileName))
-    ipsToRemove.forEach((ip) => removeIP(ip))
+    return ips as ReadonlyArray<readonly string[]>
+  }
+
+  function reduceBlockListsToMap(
+    config: readonly UpdateConfig[],
+    blockLists: ReadonlyArray<readonly string[]>,
+  ): ReadonlyMap<string, string> {
+    return blockLists.reduce((acc, curr, index) => {
+      const fileName = config[index].name
+      curr.forEach((val) => acc.set(val, fileName))
+      return acc
+    }, new Map<string, string>())
   }
 
   async function update(config: readonly UpdateConfig[]): Promise<void> {
-    const updatePromises = config.map((data) =>
-      updateTrieForFile(data.name, data.url),
-    )
-    await Promise.all(updatePromises)
+    const blockLists = await getBlockListsForConfig(config)
+    if (!blockLists) {
+      return
+    }
+
+    const blockListMap = reduceBlockListsToMap(config, blockLists)
+    const uniqueIps = Array.from(blockListMap.keys())
+
+    const existingTrieDict = trie.toDict()
+    const existingIps = Object.keys(existingTrieDict)
+
+    const ipsToAdd = difference(uniqueIps, existingIps)
+    const ipsToRemove = difference(existingIps, uniqueIps)
+
+    ipsToAdd.forEach((ip) => addIP(ip, blockListMap.get(ip) ?? 'unknown'))
+    ipsToRemove.forEach((ip) => removeIP(ip))
 
     console.log(`Updated Trie size is the following: ${trie.size()}`)
   }
