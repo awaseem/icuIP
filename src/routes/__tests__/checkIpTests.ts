@@ -1,12 +1,12 @@
+import fastify from 'fastify'
 import { createTrie } from '../../models/trie'
-import { createServer } from '../../server/server'
 import { addIpCheckRoute } from '../checkIp'
 
 describe('Check IP address endpoint', () => {
   const trie = createTrie()
   trie.insert('0.0.0.0/8', 'test')
 
-  const server = createServer()
+  const server = fastify()
   addIpCheckRoute(server, trie)
 
   it('handles the correct IP as valid', async () => {

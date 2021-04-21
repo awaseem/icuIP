@@ -1,5 +1,5 @@
 import { FastifyRequest, FastifyReply } from 'fastify'
-import { FastifyServer } from '../server/server'
+import { FastifyServer } from '../types/serverHelper'
 
 const VERSION = 'v1'
 const STATUS_ROUTE = 'status'

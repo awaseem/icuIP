@@ -1,6 +1,6 @@
 import { FastifyReply } from 'fastify'
 import { Trie } from '../models/trie'
-import { FastifyServer, RequestGeneric } from '../server/server'
+import { FastifyServer, RequestGeneric } from '../types/serverHelper'
 
 const VERSION = 'v1'
 const CHECK_IP_ROUTE = 'check/:ip'
